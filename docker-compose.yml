@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  php:
+    build:
+      context: .
+      dockerfile: ./containers/php/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/var/www/html
+    command: php -S 0.0.0.0:8000
+    links:
+      - mysql
+  mysql:
+    build:
+      context: .
+      dockerfile: ./containers/mysql/Dockerfile
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql:/var/lib/mysql/
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    environment:
+      MYSQL_DATABASE: 'ezoom'
+      MYSQL_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: 'root'
+volumes:
+  mysql:
